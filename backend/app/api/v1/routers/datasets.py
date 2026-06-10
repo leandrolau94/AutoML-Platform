@@ -3,6 +3,7 @@ from app.api.v1.dependencies_dataset import (get_dataset_service, )
 from app.schemas.dataset import DatasetCreate, DatasetUpdate
 from app.services.dataset_service import (DatasetService, )
 from app.schemas.target_selection import (TargetSelectionRequest, )
+from app.schemas.prediction import (PredictionRequest, )
 
 router = APIRouter(prefix="/datasets", tags=["datasets"])
 
@@ -75,3 +76,7 @@ async def  train(dataset_id: str, dataset_service=Depends(get_dataset_service)):
 @router.get("/{dataset_id}/model")
 async def model_registry(dataset_id: str, dataset_service=Depends(get_dataset_service)):
     return await (dataset_service.get_model_registry(dataset_id))
+
+@router.post("/{dataset_id}/predict")
+async def predict(dataset_id: str, request: PredictionRequest, dataset_service=Depends(get_dataset_service)):
+    return await (dataset_service.predict(dataset_id, request.values))
