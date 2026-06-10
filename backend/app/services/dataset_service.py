@@ -12,10 +12,11 @@ from app.services.feature_analysis_service import (FeatureAnalysisService, )
 from app.services.training_service import (TrainingService, )
 from app.services.model_registry_service import (ModelRegistryService, )
 from app.services.prediction_service import (PredictionService, )
+from app.services.evaluation_service import (EvaluationService, )
 
 class DatasetService:
     
-    def __init__(self, repository: DatasetRepository, upload_service: UploadService, profiling_service: ProfilingService, insights_service: InsightsService, schema_service: SchemaService, target_service: TargetRecommendationService, task_detection_service: TaskDetectionService, feature_analysis_service: FeatureAnalysisService, training_service: TrainingService, model_registry_service: ModelRegistryService, prediction_service: PredictionService):
+    def __init__(self, repository: DatasetRepository, upload_service: UploadService, profiling_service: ProfilingService, insights_service: InsightsService, schema_service: SchemaService, target_service: TargetRecommendationService, task_detection_service: TaskDetectionService, feature_analysis_service: FeatureAnalysisService, training_service: TrainingService, model_registry_service: ModelRegistryService, prediction_service: PredictionService, evaluation_service: EvaluationService):
         self.repository = repository
         self.upload_service = upload_service
         self.profiling_service = profiling_service
@@ -27,6 +28,7 @@ class DatasetService:
         self.training_service = (training_service)
         self.model_registry_service = (model_registry_service)
         self.prediction_service = (prediction_service)
+        self.evaluation_service = (evaluation_service)
     
     async def create_dataset(self, payload: DatasetCreate) -> str:
         dataset = Dataset(name=payload.name, description=payload.description)

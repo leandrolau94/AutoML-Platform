@@ -12,6 +12,8 @@ from app.schemas.training import ( TrainingResponse)
 
 
 class TrainingService:
+    def __init__(self, evaluation_service):
+        self.evaluation_service = evaluation_service
     async def train(self, dataset: dict):
         csv_path = dataset["file_path"]
         df = pd.read_csv(csv_path)
@@ -37,13 +39,13 @@ class TrainingService:
         predictions = (full_pipeline.predict(X_test))
         model_path = (f"models/{dataset['_id']}.joblib")
         joblib.dump(full_pipeline, model_path)
-        accuracy = accuracy_score(y_test, predictions)
+        metrics = (self.evaluation_service.evaluate_classification(y_test, predictions))
         training_info = TrainingResponse(
             model_name="RandomForestClassifier",
             task_type=task_type,
             train_rows=len(X_train),
             test_rows=len(X_test),
-            metrics={"accuracy": round(accuracy, 4)},
+            metrics=metrics,
             model_path=model_path
         )
         return training_info

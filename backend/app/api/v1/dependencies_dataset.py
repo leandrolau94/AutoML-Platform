@@ -13,6 +13,7 @@ from app.services.feature_analysis_service import (FeatureAnalysisService, )
 from app.services.training_service import (TrainingService, )
 from app.services.model_registry_service import (ModelRegistryService, )
 from app.services.prediction_service import (PredictionService, )
+from app.services.evaluation_service import (EvaluationService, )
 
 def get_dataset_service(db = Depends(get_db)):
     repository = DatasetRepository(db["datasets"])
@@ -24,9 +25,10 @@ def get_dataset_service(db = Depends(get_db)):
     target_service = TargetRecommendationService()
     task_detection_service = TaskDetectionService()
     feature_analysis_service = (FeatureAnalysisService())
-    training_service = (TrainingService())
     model_registry_service = (ModelRegistryService())
     prediction_service = (PredictionService())
+    evaluation_service = (EvaluationService())
+    training_service = (TrainingService(evaluation_service))
     return DatasetService(
         repository,
         upload_service,
@@ -38,5 +40,6 @@ def get_dataset_service(db = Depends(get_db)):
         feature_analysis_service,
         training_service,
         model_registry_service,
-        prediction_service
+        prediction_service,
+        evaluation_service
     )
