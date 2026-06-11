@@ -14,6 +14,7 @@ from app.services.training_service import (TrainingService, )
 from app.services.model_registry_service import (ModelRegistryService, )
 from app.services.prediction_service import (PredictionService, )
 from app.services.evaluation_service import (EvaluationService, )
+from app.services.benchmark_service import (BenchmarkService)
 
 def get_dataset_service(db = Depends(get_db)):
     repository = DatasetRepository(db["datasets"])
@@ -29,6 +30,7 @@ def get_dataset_service(db = Depends(get_db)):
     prediction_service = (PredictionService())
     evaluation_service = (EvaluationService())
     training_service = (TrainingService(evaluation_service))
+    benchmark_service = (BenchmarkService(evaluation_service))
     return DatasetService(
         repository,
         upload_service,
@@ -41,5 +43,6 @@ def get_dataset_service(db = Depends(get_db)):
         training_service,
         model_registry_service,
         prediction_service,
-        evaluation_service
+        evaluation_service,
+        benchmark_service
     )

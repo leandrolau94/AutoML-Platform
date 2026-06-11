@@ -13,10 +13,11 @@ from app.services.training_service import (TrainingService, )
 from app.services.model_registry_service import (ModelRegistryService, )
 from app.services.prediction_service import (PredictionService, )
 from app.services.evaluation_service import (EvaluationService, )
+from app.services.benchmark_service import (BenchmarkService, )
 
 class DatasetService:
     
-    def __init__(self, repository: DatasetRepository, upload_service: UploadService, profiling_service: ProfilingService, insights_service: InsightsService, schema_service: SchemaService, target_service: TargetRecommendationService, task_detection_service: TaskDetectionService, feature_analysis_service: FeatureAnalysisService, training_service: TrainingService, model_registry_service: ModelRegistryService, prediction_service: PredictionService, evaluation_service: EvaluationService):
+    def __init__(self, repository: DatasetRepository, upload_service: UploadService, profiling_service: ProfilingService, insights_service: InsightsService, schema_service: SchemaService, target_service: TargetRecommendationService, task_detection_service: TaskDetectionService, feature_analysis_service: FeatureAnalysisService, training_service: TrainingService, model_registry_service: ModelRegistryService, prediction_service: PredictionService, evaluation_service: EvaluationService, benchmark_service: BenchmarkService):
         self.repository = repository
         self.upload_service = upload_service
         self.profiling_service = profiling_service
@@ -29,6 +30,7 @@ class DatasetService:
         self.model_registry_service = (model_registry_service)
         self.prediction_service = (prediction_service)
         self.evaluation_service = (evaluation_service)
+        self.benchmark_service = (benchmark_service)
     
     async def create_dataset(self, payload: DatasetCreate) -> str:
         dataset = Dataset(name=payload.name, description=payload.description)
@@ -154,3 +156,9 @@ class DatasetService:
             return {"error": "Not training model found"}
         model_path = training["model_path"]
         return await (self.prediction_service.predict(model_path, values))
+    
+    async def benchmark(self, dataset_id: str):
+        dataset = await (self.repository.get_by_id(dataset_id))
+        if not dataset:
+            return {"error": "Dataset not found"}
+        return await (self.benchmark_service.benchmark(dataset))

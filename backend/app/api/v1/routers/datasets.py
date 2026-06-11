@@ -80,3 +80,7 @@ async def model_registry(dataset_id: str, dataset_service=Depends(get_dataset_se
 @router.post("/{dataset_id}/predict")
 async def predict(dataset_id: str, request: PredictionRequest, dataset_service=Depends(get_dataset_service)):
     return await (dataset_service.predict(dataset_id, request.values))
+
+@router.get("/{dataset_id}/benchmark")
+async def benchmark(dataset_id: str, dataset_service=Depends(get_dataset_service)):
+    return await (dataset_service.benchmark(dataset_id))
