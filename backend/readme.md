@@ -357,6 +357,21 @@ Using the Titanic dataset:
 
 ---
 
+## Deployment
+
+- Docker
+- Azure Container Registry (ACR)
+- Azure Container Apps
+- MongoDB Atlas
+
+### Public API
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io
+
+### Swagger
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/docs
+
 ## Author
 
 Leandro Daniel Lau Alfonso
