@@ -6,22 +6,24 @@ class TaskDetectionService:
         is_numeric = target_column["is_numeric"]
         reasons = []
         
-        #state classification task decision rules
-        if n_unique <= 20:
-            reasons.append("target has low number of unique values")
-            if is_numeric:
-                reasons.append("numeric categorical target")
-                confidence = 0.98
-            else:
-                reasons.append("categorical target")
-                confidence = 0.90
-            return TaskDetectionResponse(task_type="classification", confidence=confidence, reasons=reasons)
+        #Binary Classification
+        if n_unique == 2:
+            reasons.append("target has exactly two classes")
+            return TaskDetectionResponse(task_type="classification", confidence=0.99, reasons=reasons)
         
-        #state regression task decision rules
-        if is_numeric and n_unique > 20:
+        #Multiclass Classification
+        if not is_numeric:
+            reasons.append("target is categorical")
+            return TaskDetectionResponse(task_type="classification", confidence=0.95, reasons=reasons)
+        
+        #Numeric Classification
+        if is_numeric and n_unique <= 10:
+            reasons.append("numeric target with few classes")
+            return TaskDetectionResponse(task_type="classification", confidence=0.90, reasons=reasons)
+        
+        #Regression
+        if is_numeric and n_unique > 10:
+            reasons.append("numeric target with many unique values")
             return TaskDetectionResponse(task_type="regression", confidence=0.95, reasons=reasons)
         
-        #state unknown task decision rules (clustering and others for future improvements)
-        reasons.append("unable to confidently determine task type")
-        
-        return TaskDetectionResponse(task_type="unknown", confidence=0.5, reasons=reasons)
+        return TaskDetectionResponse(task_type="unknown", confidence=0.5, reasons=["unable to determine task type"])
