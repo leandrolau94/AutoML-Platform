@@ -161,4 +161,6 @@ class DatasetService:
         dataset = await (self.repository.get_by_id(dataset_id))
         if not dataset:
             return {"error": "Dataset not found"}
-        return await (self.benchmark_service.benchmark(dataset))
+        benchmark_result = await self.benchmark_service.benchmark(dataset)
+        await self.repository.save_benchmark(dataset_id, benchmark_result.model_dump())
+        return benchmark_result

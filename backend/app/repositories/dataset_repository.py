@@ -61,3 +61,6 @@ class DatasetRepository:
     
     async def save_training(self, dataset_id: str, training: dict):
         await self.collection.update_one({"_id": ObjectId(dataset_id)}, {"$set": {"training": training}})
+    
+    async def save_benchmark(self, dataset_id: str, benchmark: dict):
+        await self.collection.update_one({"_id": ObjectId(dataset_id)}, {"$set": {"benchmark": benchmark}})
