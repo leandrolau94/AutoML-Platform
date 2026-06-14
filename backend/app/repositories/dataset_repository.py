@@ -40,10 +40,6 @@ class DatasetRepository:
         result = await self.collection.insert_one(metadata)
         return str(result.inserted_id)
     
-    async def get_by_id(self, dataset_id: str):
-        document = await self.collection.find_one({"_id": ObjectId(dataset_id)})
-        return document
-    
     async def save_schema(self, dataset_id: str, schema_data: dict):
         await self.collection.update_one({"_id": ObjectId(dataset_id)},{"$set": {"schema": schema_data}})
     

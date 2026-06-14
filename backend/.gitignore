@@ -95,3 +95,6 @@ models/*.joblib
 
 *.db
 *.sqlite3
+
+#=========catboost_info temporary===========
+backend/catboost_info/
