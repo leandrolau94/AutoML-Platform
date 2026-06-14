@@ -164,3 +164,11 @@ class DatasetService:
         benchmark_result = await self.benchmark_service.benchmark(dataset)
         await self.repository.save_benchmark(dataset_id, benchmark_result.model_dump())
         return benchmark_result
+    
+    async def train_best_model(self, dataset_id: str):
+        dataset = await self.repository.get_by_id(dataset_id)
+        if not dataset:
+            return {"error": "Dataset not found"}
+        training_result = await (self.training_service.train_best_model(dataset))
+        await (self.repository.save_training(dataset_id, training_result.model_dump()))
+        return training_result

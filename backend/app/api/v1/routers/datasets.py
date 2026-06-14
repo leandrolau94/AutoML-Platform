@@ -84,3 +84,7 @@ async def predict(dataset_id: str, request: PredictionRequest, dataset_service=D
 @router.get("/{dataset_id}/benchmark")
 async def benchmark(dataset_id: str, dataset_service=Depends(get_dataset_service)):
     return await (dataset_service.benchmark(dataset_id))
+
+@router.get("/{dataset_id}/train-best-model")
+async def train_best_model(dataset_id: str, dataset_service=Depends(get_dataset_service)):
+    return await (dataset_service.train_best_model(dataset_id))
