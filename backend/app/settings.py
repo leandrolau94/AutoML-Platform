@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     MONGODB_URI: str
     DATABASE_NAME: str
     UPLOAD_DIR: str
+    AZURE_STORAGE_CONNECTION_STRING: str
+    AZURE_STORAGE_CONTAINER: str = "datasets"
     
     model_config = SettingsConfigDict(
         env_file=".env", extra="ignore"

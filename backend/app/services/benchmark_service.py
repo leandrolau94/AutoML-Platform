@@ -12,11 +12,13 @@ from lightgbm import LGBMClassifier, LGBMRegressor
 from catboost import CatBoostClassifier, CatBoostRegressor
 
 class BenchmarkService:
-    def __init__(self, evaluation_service):
+    def __init__(self, evaluation_service, storage):
         self.evaluation_service = (evaluation_service)
+        self.storage = storage
     
     async def benchmark(self, dataset: dict):
-        csv_path = dataset["file_path"]
+        blob_name = dataset["blob_name"]
+        csv_path = await self.storage.download_file(blob_name)
         df = pd.read_csv(csv_path)
         target_column = (dataset["selected_target"]["column"])
         feature_columns = (dataset["feature_analysis"]["selected_features"])

@@ -3,7 +3,8 @@ from pydantic import BaseModel
 
 class DatasetMetadata(BaseModel):
     file_name: str
-    file_path: str
+    blob_name: str
+    blob_url: str
     rows: int
     columns: int
     file_size_mb: float

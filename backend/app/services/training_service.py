@@ -15,8 +15,9 @@ from catboost import (CatBoostClassifier, CatBoostRegressor)
 
 
 class TrainingService:
-    def __init__(self, evaluation_service):
+    def __init__(self, evaluation_service, storage):
         self.evaluation_service = evaluation_service
+        self.storage = storage
     
     def _create_model(self, model_name: str):
         model_registry = {
@@ -32,7 +33,8 @@ class TrainingService:
         return model_registry[model_name]
     
     async def _train_model(self, dataset: dict, model):
-        csv_path = dataset["file_path"]
+        blob_name = dataset["blob_name"]
+        csv_path = await self.storage.download_file(blob_name)
         df = pd.read_csv(csv_path)
         target_column = (dataset["selected_target"]["column"])
         feature_columns = (dataset["feature_analysis"]["selected_features"])

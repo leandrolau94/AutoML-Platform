@@ -14,10 +14,11 @@ from app.services.model_registry_service import (ModelRegistryService, )
 from app.services.prediction_service import (PredictionService, )
 from app.services.evaluation_service import (EvaluationService, )
 from app.services.benchmark_service import (BenchmarkService, )
+from app.storage.blob_storage import (BlobStorage, )
 
 class DatasetService:
     
-    def __init__(self, repository: DatasetRepository, upload_service: UploadService, profiling_service: ProfilingService, insights_service: InsightsService, schema_service: SchemaService, target_service: TargetRecommendationService, task_detection_service: TaskDetectionService, feature_analysis_service: FeatureAnalysisService, training_service: TrainingService, model_registry_service: ModelRegistryService, prediction_service: PredictionService, evaluation_service: EvaluationService, benchmark_service: BenchmarkService):
+    def __init__(self, repository: DatasetRepository, upload_service: UploadService, profiling_service: ProfilingService, insights_service: InsightsService, schema_service: SchemaService, target_service: TargetRecommendationService, task_detection_service: TaskDetectionService, feature_analysis_service: FeatureAnalysisService, training_service: TrainingService, model_registry_service: ModelRegistryService, prediction_service: PredictionService, evaluation_service: EvaluationService, benchmark_service: BenchmarkService, storage: BlobStorage):
         self.repository = repository
         self.upload_service = upload_service
         self.profiling_service = profiling_service
@@ -31,6 +32,7 @@ class DatasetService:
         self.prediction_service = (prediction_service)
         self.evaluation_service = (evaluation_service)
         self.benchmark_service = (benchmark_service)
+        self.storage = storage
     
     async def create_dataset(self, payload: DatasetCreate) -> str:
         dataset = Dataset(name=payload.name, description=payload.description)
@@ -58,20 +60,23 @@ class DatasetService:
         dataset = await self.repository.get_by_id(dataset_id)
         if not dataset:
             return {"error": "Dataset not found"}
-        return await self.profiling_service.profile_dataset(dataset["file_path"])
+        csv_path = await self.storage.download_file(dataset["blob_name"])
+        return await self.profiling_service.profile_dataset(csv_path)
     
     async def dataset_insights(self, dataset_id: str):
         dataset = await self.repository.get_by_id(dataset_id)
         if not dataset:
             return {"error": "Dataset not found"}
-        profile = (await self.profiling_service.profile_dataset(dataset["file_path"]))
+        csv_path = await self.storage.download_file(dataset["blob_name"])
+        profile = (await self.profiling_service.profile_dataset(csv_path))
         return await (self.insights_service.generate_insights(profile))
     
     async def get_schema(self, dataset_id: str):
         dataset = await (self.repository.get_by_id(dataset_id))
         if not dataset:
             return {"error": "Dataset not found"}
-        schema = await (self.schema_service.analyze(dataset["file_path"]))
+        csv_path = await self.storage.download_file(dataset["blob_name"])
+        schema = await (self.schema_service.analyze(csv_path))
         await (self.repository.save_schema(dataset_id, schema.model_dump()))
         return schema
     

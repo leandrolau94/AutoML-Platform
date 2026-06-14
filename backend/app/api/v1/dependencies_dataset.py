@@ -2,7 +2,8 @@ from fastapi import Depends
 from app.api.v1.dependencies import get_db
 from app.repositories.dataset_repository import (DatasetRepository, )
 from app.services.dataset_service import (DatasetService, )
-from app.storage.local_storage import (LocalStorage, )
+#from app.storage.local_storage import (LocalStorage, )
+from app.storage.blob_storage import (BlobStorage, )
 from app.services.upload_service import (UploadService, )
 from app.services.profiling_servicies import (ProfilingService, )
 from app.services.insights_service import (InsightsService, )
@@ -18,8 +19,10 @@ from app.services.benchmark_service import (BenchmarkService)
 
 def get_dataset_service(db = Depends(get_db)):
     repository = DatasetRepository(db["datasets"])
-    storage = LocalStorage()
+    
+    storage = BlobStorage()
     upload_service = UploadService(storage)
+    
     profiling_service = ProfilingService()
     insights_service = InsightsService()
     schema_service = SchemaService()
@@ -29,8 +32,8 @@ def get_dataset_service(db = Depends(get_db)):
     model_registry_service = (ModelRegistryService())
     prediction_service = (PredictionService())
     evaluation_service = (EvaluationService())
-    training_service = (TrainingService(evaluation_service))
-    benchmark_service = (BenchmarkService(evaluation_service))
+    training_service = (TrainingService(evaluation_service, storage))
+    benchmark_service = (BenchmarkService(evaluation_service, storage))
     return DatasetService(
         repository,
         upload_service,
@@ -44,5 +47,6 @@ def get_dataset_service(db = Depends(get_db)):
         model_registry_service,
         prediction_service,
         evaluation_service,
-        benchmark_service
+        benchmark_service,
+        storage
     )
