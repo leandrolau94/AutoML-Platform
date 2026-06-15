@@ -1,40 +1,90 @@
 # AI Dataset Platform
 
-An end-to-end AutoML-inspired platform built with FastAPI, MongoDB Atlas, Pandas, and Scikit-Learn.
+An end-to-end AutoML-inspired platform built with FastAPI, MongoDB Atlas and Azure Cloud.
 
-The platform allows users to upload datasets, automatically analyze their structure, recommend target variables, detect machine learning tasks, perform feature selection, train machine learning models, persist trained pipelines, and manage model metadata.
+The platform allows users to upload datasets, automatically analyze their structure, recommend target variables, detect machine learning tasks, benchmark multiple algorithms, train the best model and generate predictions through a REST API.
 
 ---
 
-## Features
+# Project Status
 
-### Dataset Management
+## Backend
 
-* Upload CSV datasets
-* Store metadata in MongoDB Atlas
-* Full CRUD operations
-* Dataset profiling and statistics
+✅ Fully implemented
 
-### Schema Analysis
+✅ Deployed on Azure Container Apps
+
+✅ Connected to MongoDB Atlas
+
+✅ Connected to Azure Blob Storage
+
+✅ Dockerized
+
+✅ Production-ready MVP
+
+## Frontend
+
+🚧 React + TypeScript frontend currently under development
+
+---
+
+# Live Deployment
+
+### Public API
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io
+
+### Swagger Documentation
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/docs
+
+---
+
+# Features
+
+## Dataset Management
+
+- Upload CSV datasets
+- Store dataset metadata in MongoDB Atlas
+- Store datasets in Azure Blob Storage
+- Dataset CRUD operations
+- Dataset profiling and statistics
+
+---
+
+## Schema Analysis
 
 Automatically analyzes uploaded datasets and extracts:
 
-* Column names
-* Data types
-* Missing values
-* Cardinality
-* Unique value counts
-* Numeric vs categorical features
+- Column names
+- Data types
+- Missing value percentages
+- Cardinality
+- Unique values
+- Numeric vs categorical features
 
-### Target Recommendation Engine
+Example:
 
-The platform recommends potential target columns using a rule-based scoring system based on:
+```json
+{
+  "name": "Age",
+  "dtype": "float64",
+  "missing_pct": 19.87,
+  "is_numeric": true
+}
+```
 
-* Cardinality
-* Missing values
-* Data type
-* Classification suitability
-* Identifier detection
+---
+
+## Target Recommendation Engine
+
+Automatically recommends candidate target columns using a rule-based scoring system based on:
+
+- Cardinality
+- Missing values
+- Data type
+- Classification suitability
+- Identifier detection
 
 Example:
 
@@ -45,41 +95,46 @@ Example:
 }
 ```
 
-### Target Selection
+---
+
+## Target Selection
 
 Users can:
 
-* Select one of the recommended target columns
-* Manually choose any dataset column
+- Select a recommended target
+- Manually choose any dataset column
 
-This design keeps the platform flexible while still providing intelligent recommendations.
+This allows both automation and user control.
 
-### Task Detection
+---
 
-Automatically detects the machine learning task based on the selected target.
+## Task Detection
 
-Currently supported:
+Automatically detects:
 
-* Classification
-* Regression
+- Classification
+- Regression
 
 Example:
 
 ```json
 {
   "task_type": "classification",
-  "confidence": 0.98
+  "problem_type": "binary",
+  "confidence": 0.99
 }
 ```
 
-### Feature Analysis
+---
+
+## Feature Analysis
 
 Automatically selects relevant input features and excludes:
 
-* Identifier columns
-* Target column
-* High-cardinality text columns
-* Columns with excessive missing values
+- Identifier columns
+- Target column
+- High-cardinality text features
+- Columns with excessive missing values
 
 Example:
 
@@ -94,54 +149,86 @@ Example:
 }
 ```
 
-### Training Pipeline
+---
 
-The platform automatically builds and trains a machine learning pipeline.
+## Automatic Preprocessing
 
-Current implementation:
+Numerical features:
 
-* RandomForestClassifier
-* RandomForestRegressor
+- Median Imputation
 
-Training workflow:
+Categorical features:
+
+- Most Frequent Imputation
+- One-Hot Encoding
+
+Implemented using:
+
+- ColumnTransformer
+- Pipeline
+- SimpleImputer
+- OneHotEncoder
+
+---
+
+## Model Benchmarking
+
+Automatically benchmarks multiple machine learning algorithms.
+
+### Classification Models
+
+- RandomForestClassifier
+- XGBClassifier
+- LGBMClassifier
+- CatBoostClassifier
+
+### Regression Models
+
+- RandomForestRegressor
+- XGBRegressor
+- LGBMRegressor
+- CatBoostRegressor
+
+Example:
+
+```json
+{
+  "best_model": "CatBoostClassifier",
+  "best_metric": 0.8268
+}
+```
+
+---
+
+## Model Training
+
+The platform automatically:
 
 ```text
 Dataset
     ↓
-Feature Selection
+Schema Analysis
+    ↓
+Target Selection
+    ↓
+Task Detection
+    ↓
+Feature Analysis
     ↓
 Train/Test Split
     ↓
-Missing Value Imputation
-    ↓
-Categorical Encoding
+Preprocessing
     ↓
 Model Training
     ↓
 Evaluation
 ```
 
-### Automatic Preprocessing
+---
 
-Numerical features:
+## Model Persistence
 
-* Median imputation
-
-Categorical features:
-
-* Most frequent imputation
-* One-Hot Encoding
-
-Implemented using:
-
-* ColumnTransformer
-* Pipeline
-* SimpleImputer
-* OneHotEncoder
-
-### Model Persistence
-
-Trained models are stored as serialized Joblib pipelines.
+Trained models are stored as Joblib pipelines.
 
 Example:
 
@@ -150,230 +237,258 @@ models/
 └── 6a21ed3132e358596fee7b15.joblib
 ```
 
-The entire preprocessing and training pipeline is persisted, allowing future inference without rebuilding transformations.
+The entire preprocessing and training pipeline is persisted.
 
-### Model Registry
+---
 
-Model metadata is stored in MongoDB.
+## Model Registry
+
+Model metadata is stored in MongoDB Atlas.
 
 Example:
 
 ```json
 {
   "training": {
-    "model_name": "RandomForestClassifier",
+    "model_name": "CatBoostClassifier",
     "task_type": "classification",
-    "train_rows": 712,
-    "test_rows": 179,
     "metrics": {
-      "accuracy": 0.8045
-    },
-    "model_path": "models/6a21ed3132e358596fee7b15.joblib"
+      "accuracy": 0.8268
+    }
   }
 }
 ```
 
 ---
 
-## Architecture
+## Prediction Service
 
-```text
-Upload Dataset
-       ↓
-Schema Analysis
-       ↓
-Target Recommendation
-       ↓
-Target Selection
-       ↓
-Task Detection
-       ↓
-Feature Analysis
-       ↓
-Training
-       ↓
-Model Persistence
-       ↓
-Model Registry
+Generate predictions using trained models.
+
+Example request:
+
+```json
+{
+  "values": {
+    "City": "Madrid",
+    "Gender": "F"
+  }
+}
+```
+
+Example response:
+
+```json
+{
+  "prediction": 1
+}
 ```
 
 ---
 
-## Tech Stack
+# Architecture
 
-### Backend
+```text
+React Frontend (In Progress)
+            ↓
+      FastAPI Backend
+            ↓
+ ┌──────────┴──────────┐
+ ↓                     ↓
 
-* FastAPI
-* Pydantic
-* Uvicorn
+MongoDB Atlas    Azure Blob Storage
 
-### Database
+            ↓
+      ML Pipeline
 
-* MongoDB Atlas
-
-### Data Processing
-
-* Pandas
-* NumPy
-
-### Machine Learning
-
-* Scikit-Learn
-* Random Forest
-* ColumnTransformer
-* Pipeline
-* Joblib
-
-### Development
-
-* Python 3.12+
-* VS Code
+   Random Forest
+      XGBoost
+      LightGBM
+      CatBoost
+```
 
 ---
 
-## Project Structure
+# Tech Stack
+
+## Backend
+
+- FastAPI
+- Pydantic
+- Uvicorn
+
+## Database
+
+- MongoDB Atlas
+
+## Cloud
+
+- Azure Container Apps
+- Azure Blob Storage
+- Azure Container Registry (ACR)
+
+## Machine Learning
+
+- Scikit-Learn
+- XGBoost
+- LightGBM
+- CatBoost
+- Pandas
+- NumPy
+- Joblib
+
+## DevOps
+
+- Docker
+- Git
+- GitHub
+
+---
+
+# API Workflow
+
+## 1. Upload Dataset
+
+```http
+POST /api/v1/datasets/upload
+```
+
+## 2. Generate Schema
+
+```http
+GET /api/v1/datasets/{dataset_id}/schema
+```
+
+## 3. Recommend Targets
+
+```http
+GET /api/v1/datasets/{dataset_id}/target-candidates
+```
+
+## 4. Select Target
+
+```http
+POST /api/v1/datasets/{dataset_id}/target
+```
+
+## 5. Detect Task
+
+```http
+GET /api/v1/datasets/{dataset_id}/task-type
+```
+
+## 6. Feature Analysis
+
+```http
+GET /api/v1/datasets/{dataset_id}/feature-analysis
+```
+
+## 7. Benchmark Models
+
+```http
+GET /api/v1/datasets/{dataset_id}/benchmark
+```
+
+## 8. Train Best Model
+
+```http
+GET /api/v1/datasets/{dataset_id}/train-best-model
+```
+
+## 9. Model Registry
+
+```http
+GET /api/v1/datasets/{dataset_id}/model
+```
+
+## 10. Predict
+
+```http
+POST /api/v1/datasets/{dataset_id}/predict
+```
+
+---
+
+# Example Results
+
+### Titanic Dataset
+
+```json
+{
+  "model_name": "CatBoostClassifier",
+  "accuracy": 0.8268,
+  "precision": 0.8525,
+  "recall": 0.7027,
+  "f1_score": 0.7704
+}
+```
+
+---
+
+# Roadmap
+
+## Completed
+
+- Dataset Upload
+- Dataset CRUD
+- MongoDB Atlas Integration
+- Azure Blob Storage Integration
+- Schema Analysis
+- Target Recommendation
+- Target Selection
+- Task Detection
+- Feature Analysis
+- Automatic Preprocessing
+- Model Benchmarking
+- Best Model Selection
+- Model Training
+- Model Registry
+- Prediction API
+- Docker Containerization
+- Azure Deployment
+
+## In Progress
+
+- React Frontend
+- Interactive Dashboard
+- Dataset Visualization
+
+## Planned
+
+- User Authentication
+- Experiment Tracking
+- Model Monitoring
+- Explainable AI (SHAP)
+- Automated Feature Engineering
+- Hyperparameter Optimization
+
+---
+
+# Project Structure
 
 ```text
 backend/
 │
 ├── app/
 │   ├── api/
-│   ├── core/
-│   ├── db/
 │   ├── repositories/
 │   ├── schemas/
 │   ├── services/
-│   └── storage/
+│   ├── storage/
+│   └── settings.py
 │
-├── uploads/
 ├── models/
+├── uploads/
 │
-├── .env
 ├── requirements.txt
+├── Dockerfile
 └── main.py
 ```
 
 ---
 
-## Current API Flow
+# Author
 
-### 1. Upload Dataset
-
-```http
-POST /datasets/upload
-```
-
-### 2. Generate Schema
-
-```http
-GET /datasets/{dataset_id}/schema
-```
-
-### 3. Recommend Target Columns
-
-```http
-GET /datasets/{dataset_id}/target-candidates
-```
-
-### 4. Select Target
-
-```http
-POST /datasets/{dataset_id}/target
-```
-
-### 5. Detect Task Type
-
-```http
-GET /datasets/{dataset_id}/task-type
-```
-
-### 6. Analyze Features
-
-```http
-GET /datasets/{dataset_id}/feature-analysis
-```
-
-### 7. Train Model
-
-```http
-GET /datasets/{dataset_id}/train
-```
-
-### 8. Model Registry
-
-```http
-GET /datasets/{dataset_id}/model
-```
-
----
-
-## Example Result
-
-Using the Titanic dataset:
-
-```json
-{
-  "model_name": "RandomForestClassifier",
-  "task_type": "classification",
-  "metrics": {
-    "accuracy": 0.8045
-  }
-}
-```
-
----
-
-## Roadmap
-
-### Completed
-
-* Dataset Upload
-* Dataset CRUD
-* MongoDB Atlas Integration
-* Schema Analysis
-* Target Recommendation
-* Target Selection
-* Task Detection
-* Feature Analysis
-* Training Service
-* Model Persistence
-* Model Registry
-
-### In Progress
-
-* Prediction API
-
-### Planned
-
-* Docker Support
-* Azure Deployment
-* XGBoost Integration
-* LightGBM Integration
-* CatBoost Integration
-* Automatic Model Benchmarking
-* Model Selection Engine
-* Experiment Tracking
-* Monitoring and Observability
-
----
-
-## Deployment
-
-- Docker
-- Azure Container Registry (ACR)
-- Azure Container Apps
-- MongoDB Atlas
-
-### Public API
-
-https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io
-
-### Swagger
-
-https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/docs
-
-## Author
-
-Leandro Daniel Lau Alfonso
+**Leandro Daniel Lau Alfonso**
 
 Mathematician | Data Scientist | Machine Learning Engineer | Full-Stack AI Developer

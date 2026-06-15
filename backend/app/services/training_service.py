@@ -65,7 +65,7 @@ class TrainingService:
             train_rows=len(X_train),
             test_rows=len(X_test),
             metrics=metrics,
-            model_path=model_path
+            model_path=str(model_path)
         )
         return training_info
     
