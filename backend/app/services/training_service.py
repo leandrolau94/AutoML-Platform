@@ -50,7 +50,9 @@ class TrainingService:
         full_pipeline = Pipeline(steps=[("preprocessor", preprocessor), ("model", model)])
         full_pipeline.fit(X_train, y_train)
         predictions = (full_pipeline.predict(X_test))
-        model_path = (f"models/{dataset['_id']}.joblib")
+        models_dir = Path("models")
+        models_dir.mkdir(exist_ok=True)
+        model_path = models_dir / f"{dataset['_id']}.joblib"
         joblib.dump(full_pipeline, model_path)
         if task_type == "classification":
             metrics = (self.evaluation_service.evaluate_classification(y_test, predictions))
