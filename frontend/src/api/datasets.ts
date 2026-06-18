@@ -14,3 +14,8 @@ export const uploadDataset = async (file: File) => {
     
     return response.data
 }
+
+export const getDatasets = async () => {
+    const response = await api.get("/datasets/");
+    return response.data;
+}
