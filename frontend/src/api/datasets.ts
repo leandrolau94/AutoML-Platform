@@ -19,3 +19,8 @@ export const getDatasets = async () => {
     const response = await api.get("/datasets/");
     return response.data;
 }
+
+export const getDatasetById = async (datasetId: string) => {
+    const response = await api.get(`/datasets/${datasetId}`);
+    return response.data;
+}

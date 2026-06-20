@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getDatasets } from "../api/datasets";
 import type {Dataset} from "../types/dataset";
+import { Link } from "react-router-dom";
 
 export default function DatasetList() {
     const [datasets, setDatasets] = useState<Dataset[]>([]);
@@ -35,7 +36,9 @@ export default function DatasetList() {
                     (dataset) => (
                             <div key={dataset._id} className=" bg-white rounded-2xl shadow-md p-5 mb-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer">
                                 <h3 className="text-xl font-semibold truncate">
-                                    {dataset.file_name}
+                                    <Link to={`/datasets/${dataset._id}`} className="hover:text-blue-600">
+                                        {dataset.file_name}
+                                    </Link>
                                 </h3>
 
                                 <div className="mt-2 text-slate-600">

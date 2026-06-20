@@ -1,10 +1,22 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import DatasetDetailPage from "./pages/DatasetDetailPage";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-slate-100">
-      <HomePage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<HomePage />}
+        />
+
+        <Route
+          path="/datasets/:id"
+          element={<DatasetDetailPage />}
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
