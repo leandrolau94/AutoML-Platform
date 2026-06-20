@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getDatasets } from "../api/datasets";
 import type {Dataset} from "../types/dataset";
 import { Link } from "react-router-dom";
+import Spinner from "./Spinner";
 
 export default function DatasetList() {
     const [datasets, setDatasets] = useState<Dataset[]>([]);
@@ -22,8 +23,16 @@ export default function DatasetList() {
         loadDatasets();
     }, []);
 
+    /*this makes spinner effect when loading datasets*/
     if (loading) {
-        return <p>Loading datasets ....</p>
+        return(
+            <div className="bg-white rounded-2xl shadow-md p-6">
+                <div className="flex items-center gap-3">
+                    <Spinner />
+                    <p className="text-slate-600">Loading, please wait</p>
+                </div>
+            </div>
+        )
     }
 
     return (

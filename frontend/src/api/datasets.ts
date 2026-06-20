@@ -13,14 +13,39 @@ export const uploadDataset = async (file: File) => {
     )
     
     return response.data
-}
+};
 
 export const getDatasets = async () => {
     const response = await api.get("/datasets/");
     return response.data;
-}
+};
 
 export const getDatasetById = async (datasetId: string) => {
     const response = await api.get(`/datasets/${datasetId}`);
     return response.data;
-}
+};
+
+export const generateSchema = async (datasetId: string) => {
+    const response = await api.get(`/datasets/${datasetId}/schema`);
+    return response.data;
+};
+
+export const recommendTargets = async (datasetId: string) => {
+    const response = await api.get(`/datasets/${datasetId}/target-candidates`);
+    return response.data;
+};
+
+export const selectTarget = async (datasetId: string, targetColumn: string) => {
+    const response = await api.post(`/datasets/${datasetId}/target`, {target_column: targetColumn});
+    return response.data;
+};
+
+export const detectTask = async (datasetId: string) => {
+    const response = await api.get(`/datasets/${datasetId}/task-type`);
+    return response.data;
+};
+
+export const analyzeFeatures = async (datasetId: string) => {
+    const response = await api.get(`/datasets/${datasetId}/feature-analysis`);
+    return response.data;
+};
