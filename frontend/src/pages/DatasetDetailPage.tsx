@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDatasetById } from "../api/datasets";
+import { selectTarget } from "../api/datasets";
 import type { DatasetDetail } from "../types/dataset";
 import PipelineStatus from "../components/PipelineStatus";
 import ActionPanel from "../components/ActionPanel";
 import Spinner from "../components/Spinner";
 import TargetSelectionModal from "../components/TargetSelectionModal";
-import { selectTarget } from "../api/datasets";
+import TaskDetectionCard from "../components/TaskDetectionCard";
+import FeatureAnalysisCard from "../components/FeatureAnalysisCard";
 
 const DatasetDetailPage = () => {
     const { id } = useParams();
@@ -16,6 +18,8 @@ const DatasetDetailPage = () => {
     const [loading, setLoading] = useState(true);
 
     const [modalOpen, setModalOpen] = useState(false);
+
+    const [activeProcess, setActiveProcess] = useState<string | null>(null);
 
     const loadDataset = async () => {
         try {
@@ -72,7 +76,13 @@ const DatasetDetailPage = () => {
                     <PipelineStatus dataset={dataset} />
                 </div>
                 <div className="mt-6">
-                    <ActionPanel dataset={dataset} onRefresh={loadDataset} onTargetRecommended={() => setModalOpen(true)} />
+                    <ActionPanel dataset={dataset} onRefresh={loadDataset} onTargetRecommended={() => setModalOpen(true)} onProcessStart={setActiveProcess} onProcessEnd={() => setActiveProcess(null)} />
+                </div>
+                <div className="mt-6">
+                    <TaskDetectionCard dataset={dataset} loading={activeProcess === "task-detection"} />
+                </div>
+                <div className="mt-6">
+                    <FeatureAnalysisCard dataset={dataset} />
                 </div>
             </div>
             <TargetSelectionModal open={modalOpen} dataset={dataset} onClose={() => setModalOpen(false)} onSave={handleTargetSave}/>

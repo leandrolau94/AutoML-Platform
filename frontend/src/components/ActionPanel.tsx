@@ -10,9 +10,11 @@ interface Props {
     dataset: DatasetDetail;
     onRefresh: () => Promise<void>;
     onTargetRecommended: () => void;
+    onProcessStart: (process: string) => void;
+    onProcessEnd: () => void;
 }
 
-const ActionPanel = ({dataset, onRefresh, onTargetRecommended}: Props) => {
+const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, onProcessEnd}: Props) => {
 
     const [schemaLoading, setSchemaLoading] = useState(false);
     const [targetLoading, setTargetLoading] = useState(false);
@@ -71,12 +73,21 @@ const ActionPanel = ({dataset, onRefresh, onTargetRecommended}: Props) => {
     const handleTaskDetection = async () => {
         try {
             setTaskLoading(true);
+            onProcessStart("task-detection");
+            const start = Date.now();
+
             await detectTask(dataset._id);
             await onRefresh();
+
+            const elapsed = Date.now() - start;
+            if (elapsed < 1000) {
+                await new Promise(resolve => setTimeout(resolve, 750-elapsed));
+            }
         } catch (e) {
             console.error(e);
         } finally {
             setTaskLoading(false);
+            onProcessEnd();
         }
     };
 
