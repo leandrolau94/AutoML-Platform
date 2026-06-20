@@ -27,24 +27,30 @@ export default function DatasetList() {
 
     return (
         <div>
-            <h2>Datasets</h2>
+            <h2 className="text-2xl font-semibold mb-4">Datasets</h2>
+            <p className="text-slate-500 mb-4">{datasets.length} datasets available</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {
                 datasets.map(
                     (dataset) => (
-                        <div key={dataset._id} style={{
-                            border: "1px solid #ccc",
-                            padding: "12px",
-                            marginBottom: "12px",
-                            borderRadius: "8px",
-                        }}>
-                            <h3>{dataset.file_name}</h3>
-                            <p>Rows: {dataset.rows}</p>
-                            <p>Columns: {dataset.columns}</p>
-                            <p>Uploaded: {" "} {new Date(dataset.uploaded_at).toLocaleString()}</p>
-                        </div>
+                            <div key={dataset._id} className=" bg-white rounded-2xl shadow-md p-5 mb-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer">
+                                <h3 className="text-xl font-semibold truncate">
+                                    {dataset.file_name}
+                                </h3>
+
+                                <div className="mt-2 text-slate-600">
+                                    <p>Rows: {dataset.rows}</p>
+                                    <p>Columns: {dataset.columns}</p>
+                                </div>
+
+                                <p className="text-sm text-slate-500 mt-3">
+                                    {new Date(dataset.uploaded_at).toLocaleString()}
+                                </p>
+                            </div>
                     )
                 )
             }
+            </div>
         </div>
     );
 }

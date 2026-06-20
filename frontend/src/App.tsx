@@ -1,15 +1,11 @@
-import UploadDataset from "./components/UploadDataset";
-import DatasetList from "./components/DatasetList";
+import HomePage from "./pages/HomePage";
 
-function App() {
+const App = () => {
   return (
-    <div style={{padding: "24px"}}>
-      <h1>AI Dataset Platform</h1>
-      <UploadDataset />
-      <hr />
-      <DatasetList />
+    <div className="min-h-screen bg-slate-100">
+      <HomePage />
     </div>
   )
-};
+}
 
-export default App;
+export default App
