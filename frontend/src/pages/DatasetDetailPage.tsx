@@ -9,6 +9,8 @@ import Spinner from "../components/Spinner";
 import TargetSelectionModal from "../components/TargetSelectionModal";
 import TaskDetectionCard from "../components/TaskDetectionCard";
 import FeatureAnalysisCard from "../components/FeatureAnalysisCard";
+import BenchmarkCard from "../components/BenchmarkCard";
+import TrainingCard from "../components/TrainingCard";
 
 const DatasetDetailPage = () => {
     const { id } = useParams();
@@ -82,7 +84,13 @@ const DatasetDetailPage = () => {
                     <TaskDetectionCard dataset={dataset} loading={activeProcess === "task-detection"} />
                 </div>
                 <div className="mt-6">
-                    <FeatureAnalysisCard dataset={dataset} />
+                    <FeatureAnalysisCard dataset={dataset} loading={activeProcess === "feature-analysis"} />
+                </div>
+                <div className="mt-6">
+                    <BenchmarkCard dataset={dataset} loading={activeProcess === "benchmark"} />
+                </div>
+                <div className="mt-6">
+                    <TrainingCard dataset={dataset} loading={activeProcess === "training"} />
                 </div>
             </div>
             <TargetSelectionModal open={modalOpen} dataset={dataset} onClose={() => setModalOpen(false)} onSave={handleTargetSave}/>

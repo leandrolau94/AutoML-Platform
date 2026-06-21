@@ -49,3 +49,13 @@ export const analyzeFeatures = async (datasetId: string) => {
     const response = await api.get(`/datasets/${datasetId}/feature-analysis`);
     return response.data;
 };
+
+export const runBenchmark = async (datasetId: string) => {
+    const response = await api.get(`/datasets/${datasetId}/benchmark`);
+    return response.data;
+};
+
+export const trainBestModel = async (datasetId: string) => {
+    const response = await api.get(`/datasets/${datasetId}/train`);
+    return response.data;
+};

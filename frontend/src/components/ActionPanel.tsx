@@ -2,7 +2,9 @@ import { generateSchema } from "../api/datasets";
 import { recommendTargets } from "../api/datasets";
 import { detectTask } from "../api/datasets";
 import { analyzeFeatures } from "../api/datasets";
+import { trainBestModel } from "../api/datasets";
 import type { DatasetDetail } from "../types/dataset";
+import { runBenchmark } from "../api/datasets";
 import { useState } from "react";
 import Spinner from "./Spinner";
 
@@ -20,6 +22,8 @@ const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, o
     const [targetLoading, setTargetLoading] = useState(false);
     const [taskLoading, setTaskLoading] = useState(false);
     const [featureLoading,setFeatureLoading] = useState(false);
+    const [benchmarkLoading, setBenchmarkLoading] = useState(false);
+    const [trainingLoading, setTrainingLoading] = useState(false);
 
     const hasSchema = !!dataset.schema;
     const hasTarget = !!dataset.selected_target;
@@ -81,7 +85,7 @@ const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, o
 
             const elapsed = Date.now() - start;
             if (elapsed < 1000) {
-                await new Promise(resolve => setTimeout(resolve, 750-elapsed));
+                await new Promise(resolve => setTimeout(resolve, 1000-elapsed));
             }
         } catch (e) {
             console.error(e);
@@ -94,12 +98,65 @@ const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, o
     const handleFeatureAnalysis = async () => {
         try {
             setFeatureLoading(true);
+            onProcessStart("feature-analysis");
+            const start = Date.now();
+
             await analyzeFeatures(dataset._id);
             await onRefresh();
+
+            const elapsed = Date.now() - start;
+            if (elapsed < 1000) {
+                await new Promise(resolve => setTimeout(resolve, 1000-elapsed));
+            }
         } catch (e) {
             console.error(e);
         } finally {
             setFeatureLoading(false);
+            onProcessEnd();
+        }
+    };
+
+    const handleBenchmark = async () => {
+        try {
+            setBenchmarkLoading(true);
+            onProcessStart("benchmark");
+            const start = Date.now();
+
+            await runBenchmark(dataset._id);
+            await onRefresh();
+
+            const elapsed = Date.now() - start;
+            if (elapsed < 1500) {
+                await new Promise(resolve => setTimeout(resolve, 1500-elapsed));
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        finally {
+            setBenchmarkLoading(false);
+            onProcessEnd();
+        }
+    };
+
+    const handleTrainModel = async () => {
+        try {
+            setTrainingLoading(true);
+            onProcessStart("training");
+            const start = Date.now();
+
+            await trainBestModel(dataset._id);
+            await onRefresh();
+
+            const elapsed = Date.now() - start;
+            if (elapsed < 2000) {
+                await new Promise(resolve => setTimeout(resolve, 2000-elapsed));
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        finally {
+            setTrainingLoading(false);
+            onProcessEnd();
         }
     };
 
@@ -165,8 +222,32 @@ const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, o
                         )
                     }
                 </button>
-                <button disabled={!hasFeatures || hasBenchmark} className="bg-blue-600 text-white px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Run Benchmark</button>
-                <button disabled={!hasBenchmark || hasTraining} className="bg-green-600 text-white px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Train Best Model</button>
+                <button onClick={handleBenchmark} disabled={!hasFeatures || hasBenchmark} className="bg-blue-600 text-white px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    {
+                        benchmarkLoading ? (
+                            <div className="flex items-center gap-2">
+                                <Spinner />
+                                <span>
+                                    Benchmarking...
+                                </span>
+                            </div>
+                        ) : (
+                            "Run Benchmark"
+                        )
+                    }
+                </button>
+                <button onClick={handleTrainModel} disabled={!hasBenchmark || hasTraining || trainingLoading} className="bg-green-600 text-white px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    {
+                        trainingLoading ? (
+                            <div className="flex items-center gap-2">
+                                <Spinner />
+                                <span>Training...</span>
+                            </div>
+                        ) : (
+                            "Train Best Model"
+                        )
+                    }
+                </button>
             </div>
         </div>
     )
