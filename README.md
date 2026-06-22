@@ -94,7 +94,7 @@ https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/
 
 Frontend:
 
-Coming soon (Vercel deployment)
+https://auto-ml-platform-black.vercel.app/
 
 ---
 

@@ -6,6 +6,20 @@ Built with React, TypeScript, TailwindCSS and React Router.
 
 ---
 
+## Live Demo
+
+Frontend:
+
+https://auto-ml-platform-black.vercel.app/
+
+Backend API:
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io
+
+Swagger:
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/docs
+
 ## Features
 
 ### Homepage

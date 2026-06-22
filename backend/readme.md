@@ -4,15 +4,19 @@ Production-ready AutoML backend built with FastAPI, MongoDB Atlas and Azure Clou
 
 ---
 
-## Deployment
+## Live Deployment
 
 Backend API:
 
 https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io
 
-Swagger Documentation:
+Swagger:
 
 https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/docs
+
+Frontend:
+
+https://auto-ml-platform-black.vercel.app/
 
 ---
 
