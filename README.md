@@ -1,117 +1,234 @@
 # AI Dataset Platform
 
-A full-stack AutoML platform built with FastAPI, React, MongoDB Atlas and Azure Cloud.
+End-to-end AutoML-inspired platform built with FastAPI, React, MongoDB Atlas and Azure Cloud.
 
-The platform enables users to upload datasets, automatically analyze their structure, identify machine learning targets, benchmark multiple algorithms, train the best-performing model and generate predictions.
+The platform allows users to upload datasets, automatically analyze their structure, recommend target variables, detect machine learning tasks, benchmark multiple algorithms, train the best model and generate predictions through a web interface.
+
+---
+
+## Live Demo
+
+### Frontend (Vercel)
+
+https://auto-ml-platform-black.vercel.app
+
+### Backend API (Azure Container Apps)
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io
+
+### Swagger Documentation
+
+https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/docs
+
+---
+
+## Current Features
+
+### Dataset Management
+
+* Upload CSV datasets
+* Dataset metadata stored in MongoDB Atlas
+* Dataset files stored in Azure Blob Storage
+* Dataset CRUD operations
+
+### Schema Analysis
+
+Automatically extracts:
+
+* Column names
+* Data types
+* Missing value percentages
+* Cardinality
+* Numeric vs categorical features
+
+### Target Recommendation
+
+Automatically recommends candidate target variables based on:
+
+* Cardinality
+* Missing values
+* Data type
+* Classification suitability
+* Identifier detection
+
+### Task Detection
+
+Automatically detects:
+
+* Classification
+* Regression
+
+### Feature Analysis
+
+Automatically selects relevant features and excludes:
+
+* Identifier columns
+* Target column
+* High-cardinality text features
+* Columns with excessive missing values
+
+### Automatic Preprocessing
+
+Numerical Features:
+
+* Median Imputation
+
+Categorical Features:
+
+* Most Frequent Imputation
+* One-Hot Encoding
+
+### Model Benchmarking
+
+Classification:
+
+* RandomForestClassifier
+* XGBClassifier
+* LGBMClassifier
+* CatBoostClassifier
+
+Regression:
+
+* RandomForestRegressor
+* XGBRegressor
+* LGBMRegressor
+* CatBoostRegressor
+
+### Model Training
+
+Automatically trains the best-performing model.
+
+### Model Persistence
+
+* Joblib pipelines
+* Azure Blob Storage persistence
+
+### Prediction Service
+
+Generate predictions using trained models directly from the frontend.
 
 ---
 
 ## Architecture
 
-React Frontend
-↓
-FastAPI Backend
-↓
-MongoDB Atlas
+```text
+React Frontend (Vercel)
+            ↓
+      FastAPI Backend
+            ↓
+ ┌──────────┴──────────┐
+ ↓                     ↓
 
-FastAPI Backend
-↓
-Azure Blob Storage
+MongoDB Atlas    Azure Blob Storage
 
-FastAPI Backend
-↓
-Machine Learning Pipeline
+            ↓
+      ML Pipeline
 
-* Random Forest
-* XGBoost
-* LightGBM
-* CatBoost
-
----
-
-## Features
-
-### Dataset Management
-
-* Upload CSV datasets
-* Dataset metadata storage
-* Azure Blob Storage integration
-
-### AutoML Workflow
-
-1. Generate Schema
-2. Recommend Target Columns
-3. Select Target
-4. Detect Task Type
-5. Analyze Features
-6. Benchmark Models
-7. Train Best Model
-8. Generate Predictions
-
-### Cloud Deployment
-
-* Azure Container Apps
-* Azure Blob Storage
-* MongoDB Atlas
+   Random Forest
+      XGBoost
+      LightGBM
+      CatBoost
+```
 
 ---
 
-## Current File Support
+## Supported File Types
 
-Supported:
+Current version supports:
 
 * CSV (.csv)
 
-Planned for Version 2:
+Planned for future versions:
 
 * Excel (.xlsx)
-* JSON
-* Parquet
-* TXT
-* PDF ingestion workflows
+* Text (.txt)
+* PDF (.pdf)
+* Additional structured data formats
 
 ---
 
-## Repository Structure
+## Tech Stack
 
-ai-dataset-platform/
+### Frontend
 
-├── backend/
+* React
+* TypeScript
+* Vite
+* Axios
 
-└── frontend/
+### Backend
+
+* FastAPI
+* Pydantic
+* Uvicorn
+
+### Database
+
+* MongoDB Atlas
+
+### Cloud
+
+* Azure Container Apps
+* Azure Blob Storage
+* Azure Container Registry
+
+### Machine Learning
+
+* Scikit-Learn
+* XGBoost
+* LightGBM
+* CatBoost
+* Pandas
+* NumPy
+* Joblib
+
+### DevOps
+
+* Docker
+* GitHub
+* Vercel
+* Azure
 
 ---
 
-## Live Services
+## Roadmap
 
-Backend API:
+### V1.0 (Completed)
 
-https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io
+* Dataset Upload
+* Schema Analysis
+* Target Recommendation
+* Target Selection
+* Task Detection
+* Feature Analysis
+* Benchmarking
+* Model Training
+* Azure Blob Storage Persistence
+* Prediction Service
+* Azure Deployment
+* Vercel Deployment
 
-Swagger Documentation:
+### V2
 
-https://ai-dataset-platform.nicebeach-9fbcb621.westeurope.azurecontainerapps.io/docs
+* Improved Feature Analysis
+* Better Benchmark Tie-Breaking
+* Prediction UI Improvements
+* Duplicate Dataset Handling
+* Large Dataset Support
+* DuckDB Integration
+* Additional File Types
 
-Frontend:
+### V3
 
-https://auto-ml-platform-black.vercel.app/
-
----
-
-## Version 2 Roadmap
-
-* Prediction UI
-* Multi-format uploads
-* Improved feature analysis
-* Better benchmark tie-breaking
-* Interactive visualizations
-* Experiment tracking
-* Authentication
+* AI Agent Assistant
+* Guided AutoML Workflows
+* Platform-Specific Help
+* Autonomous Task Execution
 
 ---
 
 ## Author
 
-Leandro Daniel Lau Alfonso
+**Leandro Daniel Lau Alfonso**
 
-Mathematician | Data Scientist | Machine Learning Engineer
+Mathematician | Data Scientist | Machine Learning Engineer | Full-Stack AI Developer
