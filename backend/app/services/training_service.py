@@ -54,6 +54,8 @@ class TrainingService:
         models_dir.mkdir(exist_ok=True)
         model_path = models_dir / f"{dataset['_id']}.joblib"
         joblib.dump(full_pipeline, model_path)
+        model_blob_name = f"models/{dataset['_id']}.joblib"
+        upload_result = await self.storage.upload_model(str(model_path), model_blob_name)
         if task_type == "classification":
             metrics = (self.evaluation_service.evaluate_classification(y_test, predictions))
         else:
@@ -65,7 +67,9 @@ class TrainingService:
             train_rows=len(X_train),
             test_rows=len(X_test),
             metrics=metrics,
-            model_path=str(model_path)
+            model_path=str(model_path),
+            model_blob_name=model_blob_name,
+            model_blob_url=upload_result["blob_url"]
         )
         return training_info
     

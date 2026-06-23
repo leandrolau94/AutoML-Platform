@@ -7,3 +7,5 @@ class TrainingResponse(BaseModel):
     test_rows: int
     metrics: dict
     model_path: str
+    model_blob_name: str
+    model_blob_url: str

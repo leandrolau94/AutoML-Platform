@@ -34,3 +34,21 @@ class BlobStorage:
                 blob_client.download_blob().readall()
             )
         return str(local_file)
+    
+    async def upload_model(self, local_path: str, blob_name: str):
+        blob_client = self.container.get_blob_client(blob_name)
+        with open(local_path, "rb") as file:
+            blob_client.upload_blob(file, overwrite=True)
+        return {
+            "blob_name": blob_name,
+            "blob_url": blob_client.url
+        }
+    
+    async def download_model(self, blob_name: str) -> str:
+        temp_dir = Path("/tmp/models")
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        local_file = temp_dir / Path(blob_name).name
+        blob_client = self.container.get_blob_client(blob_name)
+        with open(local_file, "wb") as file:
+            file.write(blob_client.download_blob().readall())
+        return str(local_file)

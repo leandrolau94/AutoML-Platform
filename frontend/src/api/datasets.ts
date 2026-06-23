@@ -59,3 +59,8 @@ export const trainBestModel = async (datasetId: string) => {
     const response = await api.get(`/datasets/${datasetId}/train`);
     return response.data;
 };
+
+export const predictDataset = async (datasetId: string, values: Record<string, any>) => {
+    const response = await api.post(`/datasets/${datasetId}/predict`, {values});
+    return response.data;
+}

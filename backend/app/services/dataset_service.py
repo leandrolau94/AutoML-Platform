@@ -159,8 +159,11 @@ class DatasetService:
         training = dataset.get("training")
         if not training:
             return {"error": "Not training model found"}
-        model_path = training["model_path"]
-        return await (self.prediction_service.predict(model_path, values))
+        #model_path = training["model_path"]
+        #return await (self.prediction_service.predict(model_path, values))
+        #azure migration of joblib instead of above
+        model_blob_name = training["model_blob_name"]
+        return await (self.prediction_service.predict(model_blob_name, values))
     
     async def benchmark(self, dataset_id: str):
         dataset = await (self.repository.get_by_id(dataset_id))

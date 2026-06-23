@@ -11,6 +11,7 @@ import TaskDetectionCard from "../components/TaskDetectionCard";
 import FeatureAnalysisCard from "../components/FeatureAnalysisCard";
 import BenchmarkCard from "../components/BenchmarkCard";
 import TrainingCard from "../components/TrainingCard";
+import PredictionCard from "../components/PredictionCard";
 
 const DatasetDetailPage = () => {
     const { id } = useParams();
@@ -91,6 +92,11 @@ const DatasetDetailPage = () => {
                 </div>
                 <div className="mt-6">
                     <TrainingCard dataset={dataset} loading={activeProcess === "training"} />
+                </div>
+                <div className="mt-6">
+                    {
+                        dataset.training && <PredictionCard dataset={dataset} />
+                    }
                 </div>
             </div>
             <TargetSelectionModal open={modalOpen} dataset={dataset} onClose={() => setModalOpen(false)} onSave={handleTargetSave}/>
