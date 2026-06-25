@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getDatasetById } from "../api/datasets";
 import { selectTarget } from "../api/datasets";
+import { deleteDataset } from "../api/datasets";
 import type { DatasetDetail } from "../types/dataset";
 import PipelineStatus from "../components/PipelineStatus";
 import ActionPanel from "../components/ActionPanel";
@@ -12,17 +13,17 @@ import FeatureAnalysisCard from "../components/FeatureAnalysisCard";
 import BenchmarkCard from "../components/BenchmarkCard";
 import TrainingCard from "../components/TrainingCard";
 import PredictionCard from "../components/PredictionCard";
+import ConfirmationModal from "../components/ConfirmationModal";
 
 const DatasetDetailPage = () => {
     const { id } = useParams();
-
     const [dataset, setDataset] = useState<DatasetDetail | null>(null);
-
     const [loading, setLoading] = useState(true);
-
     const [modalOpen, setModalOpen] = useState(false);
-
     const [activeProcess, setActiveProcess] = useState<string | null>(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const navigate = useNavigate();
 
     const loadDataset = async () => {
         try {
@@ -37,11 +38,25 @@ const DatasetDetailPage = () => {
     };
 
     const handleTargetSave = async (target: string) => {
-            if (!id) return;
-            await selectTarget(id, target);
-            await loadDataset();
-            setModalOpen(false);
-        };
+        if (!id) return;
+        await selectTarget(id, target);
+        await loadDataset();
+        setModalOpen(false);
+    };
+    
+    const handleDeleteDataset = async () => {
+        if (!id) return;
+        try {
+            setDeleteLoading(true);
+            await deleteDataset(id);
+            navigate("/");
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setDeleteLoading(false);
+            setDeleteModalOpen(false);
+        }
+    };
 
     useEffect(() => {
         loadDataset();
@@ -79,7 +94,7 @@ const DatasetDetailPage = () => {
                     <PipelineStatus dataset={dataset} />
                 </div>
                 <div className="mt-6">
-                    <ActionPanel dataset={dataset} onRefresh={loadDataset} onTargetRecommended={() => setModalOpen(true)} onProcessStart={setActiveProcess} onProcessEnd={() => setActiveProcess(null)} />
+                    <ActionPanel dataset={dataset} onRefresh={loadDataset} onTargetRecommended={() => setModalOpen(true)} onProcessStart={setActiveProcess} onProcessEnd={() => setActiveProcess(null)} onDeleteRequested={() => setDeleteModalOpen(true)} />
                 </div>
                 <div className="mt-6">
                     <TaskDetectionCard dataset={dataset} loading={activeProcess === "task-detection"} />
@@ -99,9 +114,10 @@ const DatasetDetailPage = () => {
                     }
                 </div>
             </div>
-            <TargetSelectionModal open={modalOpen} dataset={dataset} onClose={() => setModalOpen(false)} onSave={handleTargetSave}/>
+            <TargetSelectionModal open={modalOpen} dataset={dataset} onClose={() => setModalOpen(false)} onSave={handleTargetSave} />
+            <ConfirmationModal open={deleteModalOpen} title="Delete Dataset" message={`This action cannot be undone. The following resources will be permanently deleted: • Dataset metadata • CSV dataset • Trained model (if available)`} confirmText="Delete Dataset" loading={deleteLoading} onConfirm={handleDeleteDataset} onCancel={() => setDeleteModalOpen(false)} />
         </div>
     )
 }
 
-export default DatasetDetailPage
+export default DatasetDetailPage;

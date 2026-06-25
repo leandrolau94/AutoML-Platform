@@ -64,3 +64,7 @@ export const predictDataset = async (datasetId: string, values: Record<string, a
     const response = await api.post(`/datasets/${datasetId}/predict`, {values});
     return response.data;
 }
+
+export const deleteDataset = async (datasetId: string) => {
+    await api.delete(`/datasets/${datasetId}`);
+};

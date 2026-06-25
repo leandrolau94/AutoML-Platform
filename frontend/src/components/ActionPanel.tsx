@@ -14,9 +14,10 @@ interface Props {
     onTargetRecommended: () => void;
     onProcessStart: (process: string) => void;
     onProcessEnd: () => void;
+    onDeleteRequested: () => void;
 }
 
-const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, onProcessEnd}: Props) => {
+const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, onProcessEnd, onDeleteRequested}: Props) => {
 
     const [schemaLoading, setSchemaLoading] = useState(false);
     const [targetLoading, setTargetLoading] = useState(false);
@@ -247,6 +248,9 @@ const ActionPanel = ({dataset, onRefresh, onTargetRecommended, onProcessStart, o
                             "Train Best Model"
                         )
                     }
+                </button>
+                <button onClick={onDeleteRequested} className="bg-red-600 text-white px-4 py-2 rounded-xl">
+                    Delete Dataset
                 </button>
             </div>
         </div>
