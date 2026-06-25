@@ -45,6 +45,17 @@ class DatasetService:
         return await self.repository.get_by_id(dataset_id)
     
     async def delete_dataset(self, dataset_id: str):
+        dataset = await self.repository.get_by_id(dataset_id)
+        if not dataset:
+            return {"error": "Dataset not found"}
+        blob_name = dataset.get("blob_name")
+        if blob_name:
+            await self.storage.delete_blob(blob_name)
+        training = dataset.get("training")
+        if training:
+            model_blob_name = training.get("model_blob_name")
+            if model_blob_name:
+                await self.storage.delete_blob(model_blob_name)
         return await self.repository.delete(dataset_id)
     
     async def update_dataset(self, dataset_id: str, dataset: DatasetUpdate):

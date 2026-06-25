@@ -1,4 +1,5 @@
 from azure.storage.blob import BlobServiceClient
+from azure.core.exceptions import ResourceNotFoundError
 from app.settings import settings
 from pathlib import Path
 
@@ -52,3 +53,10 @@ class BlobStorage:
         with open(local_file, "wb") as file:
             file.write(blob_client.download_blob().readall())
         return str(local_file)
+    
+    async def delete_blob(self, blob_name: str):
+        try:
+            blob_client = self.container.get_blob_client(blob_name)
+            blob_client.delete_blob(delete_snapshots="include")
+        except ResourceNotFoundError:
+            pass
